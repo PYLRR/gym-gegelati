@@ -1,4 +1,4 @@
-#include "GymWrapper.h"
+#include "include/wrapper/GymWrapper.h"
 
 void GymWrapper::initialize(std::string chosenEnv){
     this->envName = chosenEnv;
@@ -8,12 +8,15 @@ void GymWrapper::initialize(std::string chosenEnv){
 
 void GymWrapper::doAction(uint64_t actionID) {
     Gym::State s;
+
     std::vector<float> action({(float)actionID});
-    env->step(action, false, &s);
+
+    env->step(action, render, &s);
 
     for (int i=0; i<this->parametersToObserve; i++) {
         this->state.setDataAt(typeid(float), i, s.observation[i]);
     }
+
     this->reward+=s.observation[0]; // add current position
     if(s.observation[0]>maxDistance){
         maxDistance=s.observation[0];

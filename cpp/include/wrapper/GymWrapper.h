@@ -54,6 +54,9 @@ protected:
   /// save of the environment name, used to make a clone of the LE
   std::string chosenEnv;
 
+  /// true if we want to display the simulation, false otherwise
+  bool render;
+
 public:
   /**
    * Constructor.
@@ -64,10 +67,13 @@ public:
    * the gym binding provides an array as input that is bigger than the real
    * input. As a consequence, we have to know the number n of inputs a given
    * environment should have to only read the first n inputs received.
+   * @param render true if we want to display the simulation, false otherwise
    */
-  GymWrapper(std::string chosenEnv, int actionSpaceSize, int nbInputParameters):
+  GymWrapper(std::string chosenEnv, int actionSpaceSize, int nbInputParameters,
+             bool render=false):
   LearningEnvironment(actionSpaceSize), parametersToObserve(nbInputParameters),
-  actionSpaceSize(actionSpaceSize), chosenEnv(chosenEnv)
+  actionSpaceSize(actionSpaceSize), chosenEnv(chosenEnv),
+  state(nbInputParameters), render(render)
   {
     initialize(chosenEnv);
     this->reset(0);
@@ -85,7 +91,8 @@ public:
   GymWrapper(const GymWrapper &other):
   LearningEnvironment(other.actionSpaceSize),
   chosenEnv(other.chosenEnv), actionSpaceSize(other.actionSpaceSize),
-  parametersToObserve(other.parametersToObserve), state(other.state)
+  parametersToObserve(other.parametersToObserve), render(other.render),
+  state(other.state)
   {
       initialize(chosenEnv);
       this->reset(0);
