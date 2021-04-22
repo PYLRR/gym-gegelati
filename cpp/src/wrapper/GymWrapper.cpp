@@ -53,13 +53,14 @@ bool GymWrapper::isTerminal() const {
 }
 
 bool GymWrapper::isCopyable() const {
-    return false;
+    return true;
 }
-/*
+
 Learn::LearningEnvironment *GymWrapper::clone() const {
     return new GymWrapper(*this);
-}*/
+}
 
 double GymWrapper::getScore() const {
     return this->maxDistance;
 }
+

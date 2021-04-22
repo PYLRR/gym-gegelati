@@ -50,6 +50,12 @@ protected:
   /// nb of parameters from the gym output vector that we want to look at
   int parametersToObserve;
 
+  /// save of action Space, used to make a clone of the LE
+  int actionSpaceSize;
+
+  /// save of the environment name, used to make a clone of the LE
+  std::string chosenEnv;
+
 public:
   /**
    * Constructor.
@@ -57,17 +63,30 @@ public:
    * @param chosenEnv name of the environment of sim (e.g. "MountainCar-v0")
    */
   GymWrapper(std::string chosenEnv, int actionSpaceSize, int nbInputParameters):
-  LearningEnvironment(actionSpaceSize), parametersToObserve(nbInputParameters){
+  LearningEnvironment(actionSpaceSize), parametersToObserve(nbInputParameters),
+  actionSpaceSize(actionSpaceSize), chosenEnv(chosenEnv)
+  {
     initialize(chosenEnv);
     this->reset(0);
   };
 
   /**
-   * \brief Copy constructor for the TicTacToe.
+   * Copy Constructor
    *
-   * Default copy constructor since all attributes are trivially copyable.
+   * Copies the fields of the other GymWrapper, but creates a new gym
+   * environment, so that it generates a different session id to communicate
+   * with the server.
+   *
+   * @param other The GymWrapper we want to copy
    */
-  GymWrapper(const GymWrapper &other) = default;
+  GymWrapper(const GymWrapper &other):
+  LearningEnvironment(other.actionSpaceSize),
+  chosenEnv(other.chosenEnv), actionSpaceSize(other.actionSpaceSize),
+  parametersToObserve(other.parametersToObserve), state(other.state)
+  {
+      initialize(chosenEnv);
+      this->reset(0);
+  }
 
   /// Destructor
   ~GymWrapper(){};
@@ -98,9 +117,8 @@ public:
   virtual bool isCopyable() const override;
 
   /// Inherited via LearningEnvironment
-  virtual LearningEnvironment *clone() const{
-      return new GymWrapper(*this);
-  };
+  virtual LearningEnvironment *clone() const override;
+
 
 };
 

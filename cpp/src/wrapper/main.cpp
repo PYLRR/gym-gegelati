@@ -41,7 +41,7 @@ int main() {
 	GymWrapper le("MountainCar-v0",3,2);
 
 	// Instantiate and init the learning agent
-	Learn::LearningAgent la(le, set, params);
+	Learn::ParallelLearningAgent la(le, set, params);
 	la.init();
 
 	// Adds a logger to the LA (to get statistics on learning) on std::cout
@@ -56,6 +56,7 @@ int main() {
 
 
 
+
 	// Train for NB_GENERATIONS generations
 	for (int i = 0; i < params.nbGenerations; i++) {
 		char buff[12];
@@ -66,6 +67,9 @@ int main() {
 		result = la.evaluateAllRoots(i, Learn::LearningMode::VALIDATION);*/
 
 		la.trainOneGeneration(i);
+
+        dotExporter.setNewFilePath("/home/asimonu/Bureau/Gegelati/gym-wrapper/out_best.dot");
+        dotExporter.print();
 	}
 
 	// Keep best policy
@@ -84,5 +88,3 @@ int main() {
 
 	return 0;
 }
-
-
