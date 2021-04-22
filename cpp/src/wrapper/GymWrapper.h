@@ -1,5 +1,5 @@
-#ifndef TIC_TAC_TOE_WITH_OPPONENT_H
-#define TIC_TAC_TOE_WITH_OPPONENT_H
+#ifndef GYM_WRAPPER_H
+#define GYM_WRAPPER_H
 
 #include <random>
 
@@ -9,13 +9,11 @@
 #include "GymWrapper.h"
 
 /**
- * LearningEnvironment to play the tic tac toe game against a random player.
- * The principle of the tic tac toe is as follows. we have a 3x3 board.
- * Alternatively, each player plays a turn, and has to put a circle (for a
- * player) or a cross (for the other) in a cell. The player succeeding to align
- * 3 of his symbols in a row, column or in diagonal wins
+ * LearningEnvironment to play any simulation of gym environment.
+ * This uses the gym_binding class, which encodes the client-side of a http
+ * binding with a python gym server. GymWrapper contains variables to both
+ * describe the state to gegelati and to communicate with the server.
  *
- * In this LearningEnvironment, the trained agent plays against a random algo
  */
 class GymWrapper : public Learn::LearningEnvironment {
 protected:
@@ -54,7 +52,12 @@ public:
   /**
    * Constructor.
    *
-   * @param chosenEnv name of the environment of sim (e.g. "MountainCar-v0")
+   * @param chosenEnv name of the environment of sim (e.g. "MountainCar-v0").
+   * @param actionSpaceSize number of allowed actions in this environment.
+   * @param nbInputParameters parameters to take into consideration. Indeed,
+   * the gym binding provides an array as input that is bigger than the real
+   * input. As a consequence, we have to know the number n of inputs a given
+   * environment should have to only read the first n inputs received.
    */
   GymWrapper(std::string chosenEnv, int actionSpaceSize, int nbInputParameters):
   LearningEnvironment(actionSpaceSize), parametersToObserve(nbInputParameters){
@@ -63,9 +66,10 @@ public:
   };
 
   /**
-   * \brief Copy constructor for the TicTacToe.
+   * \brief Copy constructor for the GymWrapper.
    *
-   * Default copy constructor since all attributes are trivially copyable.
+   * Default copy constructor, unused because all attributes are not trivially
+   * copyable.
    */
   GymWrapper(const GymWrapper &other) = default;
 
