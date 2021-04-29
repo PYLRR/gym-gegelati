@@ -161,13 +161,14 @@ public:
 
 		CURLcode r = curl_easy_perform(h.get());
 
-		// temporary fix, todo explain weird observation: why do requests only cause problem for the 1st genration ? Need to create a fake session before ?
+		// failed connection handler
         int errorCount=0;
         while (r && errorCount<100){
             errorCount++;
-            usleep(rand()%1000000+1000000); // waiting x microseconds. Random time to avoid simultaneous retry in case of parallelism
-            if (errorCount>5)
-            std::cerr<<"a connection attempt failed, trial "<<std::to_string(errorCount)<<"..."<<std::endl;
+            usleep(rand()%500000+1000000); // waiting x microseconds. Random time to avoid simultaneous retry in case of parallelism
+            // if this message is written, it means we're loosing a lot of time to handle connection problems
+            if (errorCount>15)
+                std::cerr<<"a connection attempt failed, trial "<<std::to_string(errorCount)<<"..."<<std::endl;
             r = curl_easy_perform(h.get());
         }
 		if (r) {
